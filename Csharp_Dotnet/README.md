@@ -1,10 +1,4 @@
----
-title: C#/.NET Web 部分复习总结（面试常问）
-date: 2018-01-19 18:17:53
-tags:
- - Csharp
- - dotNET-Framework
----
+访问博客[C#/.NET Web 部分复习总结（面试常问）](https://ns96.com/2018/01/19/Csharp-knowledgere/) 带目录模式查看！
 
 # **C#**
 
@@ -140,7 +134,7 @@ public static int Factorial(int n)
 >ADO.NET是微软新一代.NET数据库的访问架构，ADO是ActiveX Data Objects的缩写。ADO.NET是数据库应用程序和数据源之间沟通的桥梁，主要提供一个面向对象的数据访问架构，用来开发数据库应用程序。  
 
   
-![ADO&DataSet](img\adodataset.png)
+![ADO&DataSet](img/adodataset.png)
 
   
  .NET Framework 数据提供程序的四个核心对象:  
