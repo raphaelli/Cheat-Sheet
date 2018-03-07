@@ -67,4 +67,87 @@ $ sudo service docker restart
 - [`docker top`](https://docs.docker.com/engine/reference/commandline/top/) 查看运行中容器的进程
 - [`docker exec`](https://docs.docker.com/engine/reference/commandline/exec/) 在运行的容器中启动新的进程
 
->守护式容器切出到后台，使用快捷键 `Ctrl+P` + `Ctrl+Q` 切出，并使用 attach 命令回到容器。
+>如果你想整合容器到[宿主进程管理(host process manager)](https://docs.docker.com/engine/admin/host_integration/)，那么以 `-r=false` 启动守护进程(daemon)然后使用 `docker start -a`。
+
+守护式容器切出到后台，使用快捷键 `Ctrl+P` + `Ctrl+Q` 切出，并使用 attach 命令回到容器。
+
+如果你想通过宿主暴露容器的端口(ports)，请看[暴露端口](#exposing-ports)一节。
+
+故障 docker 实例的重启策略在[这里](http://container42.com/2014/09/30/docker-restart-policies/)。
+
+
+## 容器限制
+
+### CPU 限制
+
+你可以限制 CPU，包括使用所有 CPU 的百分比，或者使用特定内核数。
+
+比如，你可以设置 [`cpu-shares`](https://docs.docker.com/engine/reference/run/#/cpu-share-constraint) 。这个设置看起来有点奇怪 -- 1024 的意思是 100% CPU，因此如果你希望容器使用全体 CPU 内核的 50%，应将其设置为 512。更多信息，请查阅 https://goldmann.pl/blog/2014/09/11/resource-management-in-docker/#_cpu :
+
+```
+docker run -ti --c 512 agileek/cpuset-test
+```
+
+你可以只对某些 CPU 内核使用 [`cpuset-cpus`](https://docs.docker.com/engine/reference/run/#/cpuset-constraint)]。请参阅 https://agileek.github.io/docker/2014/08/06/docker-cpuset/ 获取更多细节以及一些不错的视频:
+
+```
+docker run -ti --cpuset-cpus=0,4,6 agileek/cpuset-test
+```
+
+注意，Docker 在容器内仍然可以看到所有的 CPU -- 虽然它只是用了其中一部分。请查阅 https://github.com/docker/docker/issues/20770 获取更多细节。
+
+### 内存限制
+
+你同样可以在 Docker 设置[内存限制](https://docs.docker.com/engine/reference/run/#/user-memory-constraints) :
+
+```
+docker run -it -m 300M ubuntu:14.04 /bin/bash
+```
+
+### 能力(Capabilities)
+
+Linux 的 capability 可以通过使用 `cap-add` 和 `cap-drop` 设置。请参阅 https://docs.docker.com/engine/reference/run/#/runtime-privilege-and-linux-capabilities 获取更多细节。这有助于提高安全性。
+
+如需要挂载基于 FUSE 文件系统，你需要同时结合 --cap-add 和 --device 使用:
+
+```
+docker run --rm -it --cap-add SYS_ADMIN --device /dev/fuse sshfs
+```
+
+授予对单个设备访问权限:
+
+```
+docker run -it --device=/dev/ttyUSB0 debian bash
+```
+
+授予所有设备访问权限:
+
+```
+docker run -it --privileged -v /dev/bus/usb:/dev/bus/usb debian bash
+```
+
+有关容器特权的更多详情请参考[这里](https://docs.docker.com/engine/reference/run/#/runtime-privilege-and-linux-capabilities)
+
+## Info - 信息
+
+- [`docker ps`](https://docs.docker.com/engine/reference/commandline/ps) 查看运行中的所有容器。
+- [`docker logs`](https://docs.docker.com/engine/reference/commandline/logs) 从容器中获取日志。(你也可以使用自定义日志驱动，不过在 1.10 中，它只支持 `json-file` 和 `journald`)
+- [`docker inspect`](https://docs.docker.com/engine/reference/commandline/inspect) 查看某个容器的所有信息(包括 IP 地址)。
+- [`docker events`](https://docs.docker.com/engine/reference/commandline/events) 从容器中获取事件(events)。
+- [`docker port`](https://docs.docker.com/engine/reference/commandline/port) 查看容器的公开端口。
+- [`docker top`](https://docs.docker.com/engine/reference/commandline/top) 查看容器中活动进程。
+- [`docker stats`](https://docs.docker.com/engine/reference/commandline/stats) 查看容器的资源使用情况统计信息。
+- [`docker diff`](https://docs.docker.com/engine/reference/commandline/diff) 查看容器的 FS 中有变化文件信息。
+
+常用指令：
+
+* `docker ps -a` 查看所有容器，包括正在运行的和已停止的。
+
+* `docker stats --all` 显示正在运行的容器列表 
+
+## Import&Export - 导入&导出
+
+* [`docker cp`](https://docs.docker.com/engine/reference/commandline/cp) 在容器和本地文件系统之间复制文件或文件夹。
+
+* [`docker export`](https://docs.docker.com/engine/reference/commandline/export) 将容器的文件系统切换为压缩包(tarball archive stream)输出到 STDOUT。
+
