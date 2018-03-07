@@ -1,4 +1,4 @@
-访问博客[Python Django Cheat Sheet](https://ns96.com/2018/01/30/python-django-note/) 带目录模式查看！
+>访问博客[Python Django Cheat Sheet](https://ns96.com/2018/01/30/python-django-note/) 带目录模式查看！
 
 
 >最近在考虑，这种基础的教程费时费力，实际上没有多大的作用，改作 `Cheat Sheet` 模式的话，实际上更方便且省时省力。后续的技术记录博客，除解决指定问题外，一般都以笔记标题定位的`Cheat Sheet` 模式。

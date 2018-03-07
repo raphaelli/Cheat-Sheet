@@ -1,4 +1,4 @@
-访问博客[dotNet Core Cheat Sheet](https://ns96.com/2018/02/07/dotnet-cheat-sheet/) 带目录模式查看！
+>访问博客[dotNet Core Cheat Sheet](https://ns96.com/2018/02/07/dotnet-cheat-sheet/) 带目录模式查看！
 
 # 环境
 
