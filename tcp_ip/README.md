@@ -33,3 +33,13 @@ RFC是什么？RFC就是tcp/ip协议的标准文档，在这里我们可以看�
 
 现在常用的编程接口有socket和TLI。而前面的有时候也叫做“Berkeley socket”，可见Berkeley对于网络的发展有多大的贡献。
 
+# Link layer - 链路层
+通常将链路层称为数据链路层，在TCP/IP协议族中，数据链路层有三个目的：
+1. 为IP模块发送和接收IP数据报。
+2. 为ARP模块发送ARP请求和接收ARP应答。
+3. 为RARP发送RARP请求和接收RARP应答。
+
+先来说下这几个英文简称：
+- IP 即 Internet Protocol ，中文为网络协议，IP地址即为网络协议地址的简称。
+- ARP 即 Address Resolution Protocol ，中文为地址解析协议，用来通过IP地址定位MAC地址。
+-
