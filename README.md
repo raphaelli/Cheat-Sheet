@@ -10,7 +10,7 @@ Study Cheat Sheet 日常学习的笔记记录
 
 |Technology|Status|
 |:--:|:--:|
-|[Docker](/docker)|30%|
+|[Docker](/docker)|基本完成待完善|
 |[DotNet Core](/dot_Net_Core)|init|
 |[Python Django](/Django)|init|
 |[TCP/IP](/tcp_ip)|10%|
