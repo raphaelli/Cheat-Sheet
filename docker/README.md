@@ -474,7 +474,7 @@ USER user
 
 要在 Ubuntu 15.10 中启用用户命名空间 ("remap the userns")，请[跟着这篇博客的例子](https://raesene.github.io/blog/2016/02/04/Docker-User-Namespaces/)来做。
 
-# 小贴士
+# Tips
 
 来源:
 
