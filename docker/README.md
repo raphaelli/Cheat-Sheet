@@ -405,3 +405,71 @@ end
 docker port CONTAINER $CONTAINERPORT
 ```
 
+# 安全(Security)
+
+这节准备讨论一些关于 Docker 安全性的问题。[安全](https://docs.docker.com/articles/security/)这章讲述了更多细节。
+
+首先第一件事: Docker 是有 root 权限的。如果你在 `docker` 组，那么你就有[ root 权限](http://reventlov.com/advisories/using-the-docker-command-to-root-the-host)。如果你暴露了 docker unix socket 给容器，意味着你赋予了容器[宿主的 root 权限](https://www.lvh.io/posts/dont-expose-the-docker-socket-not-even-to-a-container.html)。Docker 不应该是你唯一的防御措施。
+
+## 安全提示
+
+为了最大的安全性，你应该会考虑在虚拟机上运行 Docker 。这是直接从 Docker 安全团队拿来的资料 -- [slides](http://www.slideshare.net/jpetazzo/linux-containers-lxc-docker-and-security) / [notes](http://www.projectatomic.io/blog/2014/08/is-it-safe-a-look-at-docker-and-security-from-linuxcon/)。然后，可以使用 AppArmor / seccomp / SELinux / grsec 之类的来[限制容器的权限](http://linux-audit.com/docker-security-best-practices-for-your-vessel-and-containers/)。更多细节，请查阅 [Docker 1.10 security features](https://blog.docker.com/2016/02/docker-engine-1-10-security/)。
+
+Docker 镜像 id 属于[敏感信息](https://medium.com/@quayio/your-docker-image-ids-are-secrets-and-its-time-you-treated-them-that-way-f55e9f14c1a4) 所以它不应该向外界公开。你应该把他们当成密码来对待。
+
+参考 [Docker Security Cheat Sheet](https://github.com/konstruktoid/Docker/blob/master/Security/CheatSheet.adoc)中 - 作者是 [Thomas Sjögren](https://github.com/konstruktoid) - 关于如何提高容器安全的建议。
+
+下载[docker 安全测试脚本](https://github.com/docker/docker-bench-security)，下载[白皮书](https://blog.docker.com/2015/05/understanding-docker-security-and-best-practices/) 以及订阅[邮件列表](https://www.docker.com/docker-security) (不幸的是 Docker 并没有独立的邮件列表，只有 dev / user)。
+
+你应该远离那些使用编译版本 grsecurity / pax 的不稳定内核，比如 [Alpine Linux](https://en.wikipedia.org/wiki/Alpine_Linux)。如果在产品中用了 grsecurity ，那么你应该考虑使用有[商业支持](https://grsecurity.net/business_support.php)的[稳定版本](https://grsecurity.net/announce.php)，就像你对待 RedHat 那样。它要 $200 每月，对于你的运维预算来说不值一提。
+
+从 docker 1.11 开始，你可以轻松的限制在容器中可用的进程数，以防止 fork bombs。 这要求 linux 内核 >= 4.3 并且要在内核配置中打开 CGROUP_PIDS=y 。
+
+```
+docker run --pids-limit=64
+```
+
+同时，从 docker 1.11 开始，你也可以限制进程有再获取新权限的能力了。该功能是 linux 内核从 version 3.5 开始就拥有的。你可以从[这篇博客](http://www.projectatomic.io/blog/2016/03/no-new-privs-docker/)中阅读到更多关于这方面的内容。
+
+```
+docker run --security-opt=no-new-privileges
+```
+
+参考 [Docker Security Cheat Sheet](http://container-solutions.com/content/uploads/2015/06/15.06.15_DockerCheatSheet_A2.pdf) (它是个 PDF 版本，搞得非常难用，所以拷贝出来了) 的 [容器解決方案](http://container-solutions.com/is-docker-safe-for-production/):
+
+关闭内部进程通讯:
+
+```
+docker -d --icc=false --iptables
+```
+
+设置容器为只读:
+
+```
+docker run --read-only
+```
+
+通过 hashsum 来验证卷标:
+
+```
+docker pull debian@sha256:a25306f3850e1bd44541976aa7b5fd0a29be
+```
+
+设置卷标为只读:
+
+```
+docker run -v $(pwd)/secrets:/secrets:ro debian
+```
+
+在 Dockerfile 中定义并运行一个用户，避免在容器中以 root 身份操作:
+
+```
+RUN groupadd -r user && useradd -r -g user user
+USER user
+```
+
+## 用户命名空间(User Namespaces)
+
+还可以通过使用 [user namespaces](https://s3hh.wordpress.com/2013/07/19/creating-and-using-containers-without-privilege/) -- 这已经是 1.10 内建功能了，但默认情况下是不启用的。
+
+要在 Ubuntu 15.10 中启用用户命名空间 ("remap the userns")，请[跟着这篇博客的例子](https://raesene.github.io/blog/2016/02/04/Docker-User-Namespaces/)来做。
