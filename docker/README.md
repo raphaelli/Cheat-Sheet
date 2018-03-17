@@ -190,3 +190,52 @@ docker load < my_image.tar.gz
 ```
 docker save my_image:my_tag | gzip > my_image.tar.gz
 ```
+
+### 导入/导出容器
+
+从文件中将容器作为镜像导入:
+```
+cat my_container.tar.gz | docker import - my_image:my_tag
+```
+
+导出既有容器:
+```
+docker export my_container | gzip > my_container.tar.gz
+```
+
+### 加载被保存的镜像和导入作为镜像导出的容器之间的不同
+
+通过 `load` 命令来加载镜像，会创建一个新的镜像，并继承原镜像的所有历史。
+通过 `import` 将容器作为镜像导入，也会创建一个新的镜像，但并不包含原镜像的历史，因此生成的镜像会比使用加载方式生成的镜像要小。
+
+## 网络(Networks)
+
+Docker 有[网络(networks)](https://docs.docker.com/engine/userguide/networking/)功能。我并不是很了解它，所以这是一个扩展本文的好地方。这里有篇笔记指出，这是一种可以不使用端口来达成 docker 容器间通信的好方法。详情查阅[通过网络来工作](https://docs.docker.com/engine/userguide/networking/work-with-networks/)。
+
+### 生命周期
+
+* [`docker network create`](https://docs.docker.com/engine/reference/commandline/network_create/)
+* [`docker network rm`](https://docs.docker.com/engine/reference/commandline/network_rm/)
+
+### 信息
+
+* [`docker network ls`](https://docs.docker.com/engine/reference/commandline/network_ls/)
+* [`docker network inspect`](https://docs.docker.com/engine/reference/commandline/network_inspect/)
+
+### 链接
+
+* [`docker network connect`](https://docs.docker.com/engine/reference/commandline/network_connect/)
+* [`docker network disconnect`](https://docs.docker.com/engine/reference/commandline/network_disconnect/)
+
+你可以为[容器指定 IP 地址](https://blog.jessfraz.com/post/ips-for-all-the-things/):
+
+```
+# 使用你自己的子网和网关创建一个桥接网络
+docker network create --subnet 203.0.113.0/24 --gateway 203.0.113.254 iptastic
+
+# 基于以上创建的网络，运行一个nginx容器并指定ip
+$ docker run --rm -it --net iptastic --ip 203.0.113.2 nginx
+
+# 在其他地方使用curl访问这个ip（假设这是一个公网ip）
+$ curl 203.0.113.2
+```
