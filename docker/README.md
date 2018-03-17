@@ -473,3 +473,157 @@ USER user
 还可以通过使用 [user namespaces](https://s3hh.wordpress.com/2013/07/19/creating-and-using-containers-without-privilege/) -- 这已经是 1.10 内建功能了，但默认情况下是不启用的。
 
 要在 Ubuntu 15.10 中启用用户命名空间 ("remap the userns")，请[跟着这篇博客的例子](https://raesene.github.io/blog/2016/02/04/Docker-User-Namespaces/)来做。
+
+## 小贴士
+
+来源:
+
+* [15 Docker Tips in 5 minutes](http://sssslide.com/speakerdeck.com/bmorearty/15-docker-tips-in-5-minutes)
+
+### 最后的 Ids
+
+```
+alias dl='docker ps -l -q'
+docker run ubuntu echo hello world
+docker commit `dl` helloworld
+```
+
+### 带命令行的提交 (需要 Dockerfile)
+
+```
+docker commit -run='{"Cmd":["postgres", "-too -many -opts"]}' `dl` postgres
+```
+
+### 获取 IP 地址
+
+```
+docker inspect `dl` | grep IPAddress | cut -d '"' -f 4
+```
+
+或者安装 [jq](https://stedolan.github.io/jq/):
+
+```
+docker inspect `dl` | jq -r '.[0].NetworkSettings.IPAddress'
+```
+
+或者用[go 模板](https://docs.docker.com/engine/reference/commandline/inspect)
+
+```
+docker inspect -f '{{ .NetworkSettings.IPAddress }}' <container_name>
+```
+
+### 获取端口映射
+
+```
+docker inspect -f '{{range $p, $conf := .NetworkSettings.Ports}} {{$p}} -> {{(index $conf 0).HostPort}} {{end}}' <containername>
+```
+
+### 通过正则获取容器
+
+```
+for i in $(docker ps -a | grep "REGEXP_PATTERN" | cut -f1 -d" "); do echo $i; done`
+```
+
+### 获取环境设定
+
+```
+docker run --rm ubuntu env
+```
+
+### 强迫关闭正在运行的容器
+
+```
+docker kill $(docker ps -q)
+```
+
+### 删除旧容器
+
+```
+docker ps -a | grep 'weeks ago' | awk '{print $1}' | xargs docker rm
+```
+
+### 删除停止容器
+
+```
+docker rm -v `docker ps -a -q -f status=exited`
+```
+
+### 删除 dangling 镜像
+
+```
+docker rmi $(docker images -q -f dangling=true)
+```
+
+### 删除所有镜像
+
+```
+docker rmi $(docker images -q)
+```
+
+### 删除 dangling 卷标
+
+Docker 1.9 开始:
+
+```
+docker volume rm $(docker volume ls -q -f dangling=true)
+```
+
+1.9.0 中，过滤器 `dangling=false` 居然 _没_ 用 - 它会被忽略然后列出所有的卷标。
+
+### 查看镜像依赖
+
+```
+docker images -viz | dot -Tpng -o docker.png
+```
+
+### Docker 容器瘦身  [Intercity 博客](http://bit.ly/1Wwo61N)
+
+- 在当前运行层(RUN layer)清理 APT
+
+这应当和其他 apt 命令在同一层中完成。
+否则，前面的层将会保持原有信息，而你的镜像则依旧臃肿。
+
+```
+RUN {apt commands} \
+  && apt-get clean \  
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+```
+
+- 压缩镜像
+```
+ID=$(docker run -d image-name /bin/bash)
+docker export $ID | docker import – flat-image-name
+```
+
+- 备份
+```
+ID=$(docker run -d image-name /bin/bash)
+(docker export $ID | gzip -c > image.tgz)
+gzip -dc image.tgz | docker import - flat-image-name
+```
+
+### 监视运行中容器的系统资源利用率
+
+检查某个单独容器的 CPU, 内存, 和 网络 i/o 使用情况，你可以:
+
+```
+docker stats <container>
+```
+
+按 id 列出所有的容器:
+
+```
+docker stats $(docker ps -q)
+```
+
+按名称列出所有容器:
+
+```
+docker stats $(docker ps --format '{{.Names}}')
+```
+
+按指定镜像名称列出所有容器:
+
+```
+docker ps -a -f ancestor=ubuntu
+```
