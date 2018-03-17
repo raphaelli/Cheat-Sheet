@@ -161,7 +161,7 @@ docker run -it --privileged -v /dev/bus/usb:/dev/bus/usb debian bash
 
 镜像是[docker 容器的模板](https://docs.docker.com/engine/understanding-docker/#how-does-a-docker-image-work)。
 
-## 生命周期
+### 生命周期
 
 * [`docker images`](https://docs.docker.com/engine/reference/commandline/images) 查看所有镜像。
 * [`docker import`](https://docs.docker.com/engine/reference/commandline/import) 从压缩文件中创建镜像。
@@ -171,16 +171,16 @@ docker run -it --privileged -v /dev/bus/usb:/dev/bus/usb debian bash
 * [`docker load`](https://docs.docker.com/engine/reference/commandline/load) 通过 STDIN 从压缩包加载镜像，包括镜像和标签(images and tags) (0.7 起).
 * [`docker save`](https://docs.docker.com/engine/reference/commandline/save) 通过 STDOUT 保存镜像到压缩包，包括所有的父层，标签和版本(parent layers, tags & versions) (0.7 起).
 
-## 信息
+### 信息
 
 * [`docker history`](https://docs.docker.com/engine/reference/commandline/history) 查看镜像历史记录。
 * [`docker tag`](https://docs.docker.com/engine/reference/commandline/tag) 给镜像命名打标(tags) (本地或者仓库)。
 
-## 清理
+### 清理
 
 虽然你可以用 `docker rmi` 命令来删除指定的镜像，但是这里有个称为 [docker-gc](https://github.com/spotify/docker-gc) 的工具，它可以以一种安全的方式，清理掉那些不再被任何容器使用的镜像。
 
-## 加载/保存镜像
+### 加载/保存镜像
 
 从文件中加载镜像:
 ```
