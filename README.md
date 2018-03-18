@@ -14,4 +14,5 @@ Study Cheat Sheet 日常学习的笔记记录
 |[DotNet Core](/dot_Net_Core)|init|
 |[Python Django](/Django)|init|
 |[TCP/IP](/tcp_ip)|10%|
-| [Web Security](/web_security)|init|
+|[Web Security](/web_security)|init|
+|[CSS动画](css_tr)|init|
