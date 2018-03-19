@@ -1,4 +1,5 @@
->前往博客查看更直观的效果
+>前往博客查看更直观的效果[CSS 动画 Cheat Sheet](https://ns96.com/2018/03/19/css-ss-an/)
+Github 不支持JsFiddle 推荐前往博客查看直观效果
 
 # CSS 动画
 CSS 动画一共有如下三种：
@@ -8,10 +9,26 @@ CSS 动画一共有如下三种：
 
 下面依次介绍一下：
 
-## CSS Transition
+# CSS Transition
+
+## 基本运用
 在CSS 3引入Transition（过渡）这个概念之前，CSS是没有时间轴的。也就是说，所有的状态变化，都是即时完成。
 
 例如：
-<iframe width="100%" height="300" src="//jsfiddle.net/raphaelli96/e5bozenj/5/embedded/html,css,result/" allowpaymentrequest allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+```css
+.img {
+  background-color: pink;
+  height: 15px;
+  width: 15px;
+  transition: 1s;
+}
 
-[前往jsfiddle查看](https://jsfiddle.net/raphaelli96/e5bozenj/5/)
+.img:hover {
+  height: 200px;
+  width: 200px;
+}
+```
+
+当鼠标放置在粉色的div上时，原本瞬间放大的div会在1s内慢慢放大。
+
+[前往jsfiddle查看](https://jsfiddle.net/raphaelli96/e5bozenj/)
