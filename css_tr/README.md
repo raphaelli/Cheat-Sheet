@@ -1,3 +1,5 @@
+>前往博客查看更直观的效果
+
 # CSS 动画
 CSS 动画一共有如下三种：
 - CSS Transition 平滑的改变CSS的值
@@ -10,8 +12,6 @@ CSS 动画一共有如下三种：
 在CSS 3引入Transition（过渡）这个概念之前，CSS是没有时间轴的。也就是说，所有的状态变化，都是即时完成。
 
 例如：
+<iframe width="100%" height="300" src="//jsfiddle.net/raphaelli96/e5bozenj/5/embedded/html,css,result/" allowpaymentrequest allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-!!!
-<iframe width="100%" height="300" src="//jsfiddle.net/raphaelli96/e5bozenj/2/embedded/js,html,css,result/dark/" allowpaymentrequest allowfullscreen="allowfullscreen" frameborder="0">
-</iframe>
-!!!
+[前往jsfiddle查看](https://jsfiddle.net/raphaelli96/e5bozenj/5/)
