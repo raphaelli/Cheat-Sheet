@@ -86,10 +86,43 @@ public static int Factorial(int n)
 delegate string/*返回类型*/ ProcessDelegate(int i);
 ```
 
-这就是一个委托的定义。蓝色部分是声明委托的关键字，红色部分是返回的类型，而黑色部分是委托的类型名，和一个类名差不多，而()里的就是参数部分。它的意思是，你要使用这个委托来做事情的话，那么，做事情的方法必须满足以下条件：
-1、返回类型和委托的返回类型一致，这里是string类型；
-2、能且只能有一个参数，并且是int类型。
-OK,满足以上两个条件，一切就可以工作了:)
+这就是一个委托的定义。`delegate` 是声明委托的关键字，`string` 是返回的类型，而`ProcessDelegate(int i)`是委托的类型名，和一个类名差不多，而`()`里的就是参数部分。
+
+翻译一下，你要使用这个委托来做事情的话，那么，做事情的方法必须满足以下条件：
+
+1. 返回类型和委托的返回类型一致，这里是string类型；
+2. 能且只能有一个参数，并且是int类型。
+
+示例：
+```cs
+using System;
+using System.Collections.Generic;
+using System.Text;
+ 
+namespace TestApp
+{
+    public delegate string ProcessDelegate(string s1, string s2);
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            /*  调用方法  */
+           ProcessDelegate pd = new ProcessDelegate(new Test().Process);
+           Console.WriteLine(pd("Text1", "Text2"));
+        }
+    }
+ 
+    public class Test
+    {
+        public string Process(string s1,string s2)
+        {
+             return s1 + s2;
+        }
+    }
+}
+```
+>输出的结果是: Text1Tex2
 
 
 
