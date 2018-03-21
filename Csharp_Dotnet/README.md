@@ -69,6 +69,8 @@ public static int Factorial(int n)
 }
 ```
 
+## 泛型
+
 ## 委托
 先说下什么是委托，顾名思义，就是自己不完成，让别人帮你完成！
 
@@ -125,8 +127,42 @@ namespace TestApp
 
 >输出的结果是: Text1Tex2
 
-https://www.cnblogs.com/birdshover/archive/2008/01/07/1029471.html
+### 泛型委托
+将上面的简单委托修改为泛型委托
+```cs
+using System;
+using System.Collections.Generic;
+using System.Text;
+ 
+namespace TestApp
+{
+    public delegate string ProcessDelegate<T,S>(T s1, S s2);
 
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            /*  调用方法  */
+           ProcessDelegate pd = new ProcessDelegate<string,int>(new Test().Process);
+           Console.WriteLine(pd("Text1", "666"));
+        }
+    }
+ 
+    public class Test
+    {
+        public string Process(string s1,string s2)
+        {
+             return s1 + s2;
+        }
+    }
+}
+```
+输出的结果就是：
+Text666
+
+## 事件
+
+## 回调函数
 
 ## 什么是装箱和拆箱？
 
