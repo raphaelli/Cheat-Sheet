@@ -161,6 +161,13 @@ namespace TestApp
 Text666
 
 ## 事件
+在某件事情发生时，一个对象可以通过事件通知另一个对象。
+
+在C#中，时间定义关键字是event。
+例如：
+```cs
+event ProcessDelegate ProcessEvent;
+```
 
 ## 回调函数
 
