@@ -169,7 +169,160 @@ Text666
 event ProcessDelegate ProcessEvent;
 ```
 
+整个事件定义方法以及执行过程：
+```cs
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace TestApp
+{
+    /// <summary>
+    /// 委托
+    /// </summary>
+    /// <param name="s1"></param>
+    /// <param name="s2"></param>
+    /// <returns></returns>
+    public delegate void ProcessDelegate(object sender, EventArgs e);
+
+    class Program
+    {
+        
+
+        static void Main(string[] args)
+        {
+            /*  第一步执行  */
+            Test t = new Test();
+            /* 关联事件方法，相当于寻找到了委托人 */
+            t.ProcessEvent += new ProcessDelegate(t_ProcessEvent);
+            /* 进入Process方法 */
+            Console.WriteLine(t.Process()); 
+
+            Console.Read();
+        }
+
+        static void t_ProcessEvent(object sender, EventArgs e)
+        {
+            Test t = (Test)sender;
+            t.Text1 = "Hello";
+            t.Text2 = "World";
+        }
+    }
+
+    public class Test
+    {
+        private string s1;
+
+        public string Text1
+        {
+            get { return s1; }
+            set { s1 = value; }
+        }
+
+        private string s2;
+
+        public string Text2
+        {
+            get { return s2; }
+            set { s2 = value; }
+        }
+
+
+        public event ProcessDelegate ProcessEvent;
+
+        void ProcessAction(object sender, EventArgs e)
+        {
+            if (ProcessEvent == null)
+                ProcessEvent += new ProcessDelegate(t_ProcessEvent);
+            ProcessEvent(sender, e);
+        }
+
+        //如果没有自己指定关联方法，将会调用该方法抛出错误
+        void t_ProcessEvent(object sender, EventArgs e)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        void OnProcess()
+        {
+            ProcessAction(this, EventArgs.Empty);
+        }
+
+        public string Process()
+        {
+            OnProcess();
+            return s1 + s2;
+        }
+    }
+}
+```
+相当于是可以用任意符合委托接口(委托确实很像接口)的代码，注入到Process过程。在他返回之前给他赋值。
+
 ## 回调函数
+回调函数就是把一个方法的传给另外一个方法去执行。在C#有很多回调函数，比如异步操作的时候。
+这里先举个例子：
+```cs
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace TestApp
+{
+    /// <summary>
+    /// 委托
+    /// </summary>
+    /// <param name="s1"></param>
+    /// <param name="s2"></param>
+    /// <returns></returns>
+    public delegate string ProcessDelegate(string s1, string s2);
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            /*  调用方法  */
+            Test t = new Test();
+            string r1 = t.Process("Text1", "Text2", new ProcessDelegate(t.Process1));
+            string r2 = t.Process("Text1", "Text2", new ProcessDelegate(t.Process2));
+            string r3 = t.Process("Text1", "Text2", new ProcessDelegate(t.Process3));
+
+            Console.WriteLine(r1);
+            Console.WriteLine(r2);
+            Console.WriteLine(r3);
+        }
+    }
+
+    public class Test
+    {
+        public string Process(string s1,string s2,ProcessDelegate process)
+        {
+            return process(s1, s2);
+        }
+
+        public string Process1(string s1, string s2)
+        {
+            return s1 + s2;
+        }
+
+        public string Process2(string s1, string s2)
+        {
+            return s1 + Environment.NewLine + s2;
+        }
+
+        public string Process3(string s1, string s2)
+        {
+            return s2 + s1;
+        }
+    }
+}
+```
+输出结果：
+Text1Text2
+Text1
+Text2
+Text2Text1
+
+Process方法调用了一个回调函数，当然这里只执行了回调函数。可以看出，可以把任意一个符合这个委托的方法传递进去，意思就是说这部分代码是可变的。而设计上有一个抽离出可变部分代码的原则，这种用法无疑可以用到那种场合了。
 
 ## 什么是装箱和拆箱？
 
