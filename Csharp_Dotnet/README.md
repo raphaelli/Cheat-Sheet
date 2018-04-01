@@ -94,6 +94,47 @@ public static int Factorial(int n)
 ```
 
 ## 泛型
+C# 语言和公共语言运行时 (CLR) 的 2.0 版本中添加了泛型。 泛型将类型参数的概念引入 .NET Framework，这样就可以设计具有以下特征的类和方法：**在客户端代码声明并初始化这些类和方法之前，这些类和方法会延迟指定一个或多个类型。**
+
+例如，通过使用泛型类型参数 `T`，可以编写其他客户端代码能够使用的单个类，而不会产生运行时转换或装箱操作的成本或风险，如下所示：
+
+```cs
+// Declare the generic class.
+public class GenericList<T>
+{
+    public void Add(T input) { }
+}
+class TestGenericList
+{
+    private class ExampleClass { }
+    static void Main()
+    {
+        // Declare a list of type int.
+        GenericList<int> list1 = new GenericList<int>();
+        list1.Add(1);
+
+        // Declare a list of type string.
+        GenericList<string> list2 = new GenericList<string>();
+        list2.Add("");
+
+        // Declare a list of type ExampleClass.
+        GenericList<ExampleClass> list3 = new GenericList<ExampleClass>();
+        list3.Add(new ExampleClass());
+    }
+}
+```
+
+- 使用泛型类型可以最大限度地重用代码、保护类型安全性以及提高性能。
+
+- 泛型最常见的用途是创建集合类。
+
+- .NET Framework 类库在 System.Collections.Generic 命名空间中包含几个新的泛型集合类。 应尽可能使用这些类来代替某些类，如 System.Collections 命名空间中的 ArrayList。
+
+- 可以创建自己的泛型接口、泛型类、泛型方法、泛型事件和泛型委托。
+
+- 可以对泛型类进行约束以访问特定数据类型的方法。
+
+- 在泛型数据类型中所用类型的信息可在运行时通过使用反射来获取。
 
 ## 委托，事件与回调函数
 先说下什么是委托，顾名思义，就是自己不完成，让别人帮你完成！
